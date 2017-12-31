@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export const Search = ({onChange, value, children}) =>
-  <form>
-    {children} <input type="text" onChange={onChange} value={value}/>
+export const Search = ({onChange, onSubmit, value, children}) =>
+  <form onSubmit={onSubmit}>
+    <input type="text" onChange={onChange} value={value} />
+    <button type="submit">{children}</button>
   </form>
 
   //class Search extends Component {
