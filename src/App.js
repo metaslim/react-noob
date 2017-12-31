@@ -20,7 +20,8 @@ class App extends Component {
     this.state = {
       results: null,
       searchKey: '',
-      searchTerm: DEFAULT_QUERY
+      searchTerm: DEFAULT_QUERY,
+      error: null,
     };
 
     this.needToSearchTopStories = this.needToSearchTopStories.bind(this)
@@ -67,7 +68,7 @@ class App extends Component {
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
-      .catch(e => e);
+      .catch(e => this.setState({ error: e }));
   }
 
   handleDismiss(event, id) {
@@ -104,7 +105,7 @@ class App extends Component {
     if (this.needToSearchTopStories(searchTerm)) {
       this.fetchSearchTopStories(searchTerm);
     }
-    
+
     event.preventDefault();
   }
 
@@ -120,9 +121,14 @@ class App extends Component {
   //}
 
   render() {
-    const {results, searchTerm, searchKey} = this.state;
+    const {results, searchTerm, searchKey, error} = this.state;
+
     const page = (results && results[searchKey] && results[searchKey].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
+
+    if (error) {
+      return <p>Something went wrong.</p>;
+    }
 
     const fetchSearchTopStories = () => this.fetchSearchTopStories(searchKey, page + 1)
 
