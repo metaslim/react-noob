@@ -1,10 +1,12 @@
 import React from 'react';
 
-export const Search = ({onChange, onSubmit, value, children}) =>
+const Search = ({onChange, onSubmit, value, children}) =>
   <form onSubmit={onSubmit}>
     <input type="text" onChange={onChange} value={value} />
     <button type="submit">{children}</button>
   </form>
+
+export default Search;
 
   //class Search extends Component {
   //  render() {

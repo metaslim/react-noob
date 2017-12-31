@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from './Button';
+import Button from '../Button';
 
-export const Table = ({list, pattern, onDismiss}) => {
+const Table = ({list, pattern, onDismiss}) => {
   const isSearched = (searchTerm) => (item) => !searchTerm|| item.title.toLowerCase().includes(searchTerm.toLowerCase());
   const largeColumn = {
     width: '40%',
@@ -45,6 +45,8 @@ export const Table = ({list, pattern, onDismiss}) => {
     </div>
   );
 }
+
+export default Table;
 
 //class Table extends Component {
 //  render() {
