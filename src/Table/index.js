@@ -1,7 +1,11 @@
 import React from 'react';
 import {Button} from '../Button';
+import {SORTS} from '../Constant';
+import Sort from '../Sort';
 
-const Table = ({list, pattern, onDismiss}) => {
+const Table = ({list, pattern, onDismiss, sortKey, onSort, isSortReverse}) => {
+  const sortedList = SORTS[sortKey](list);
+  const reverseSortedList = isSortReverse ? sortedList.reverse() : sortedList;
   const isSearched = (searchTerm) => (item) => !searchTerm || item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase());
   const largeColumn = {
     width: '40%',
@@ -17,7 +21,32 @@ const Table = ({list, pattern, onDismiss}) => {
 
   return (
     <div className="table">
-      {list.filter(isSearched(pattern)).map(item => {
+      <div className="table-header">
+        <span style={{ width: '40%' }}>
+          <Sort sortKey={'TITLE'} onSort={onSort} activeSortKey={sortKey}>
+            Title
+          </Sort>
+        </span>
+        <span style={{ width: '30%' }}>
+          <Sort sortKey={'AUTHOR'} onSort={onSort} activeSortKey={sortKey}>
+            Author
+          </Sort>
+        </span>
+        <span style={{ width: '10%' }}>
+          <Sort sortKey={'COMMENTS'} onSort={onSort} activeSortKey={sortKey}>
+            Comments
+          </Sort>
+        </span>
+        <span style={{ width: '10%' }}>
+          <Sort sortKey={'POINTS'} onSort={onSort} activeSortKey={sortKey}>
+            Points
+          </Sort>
+        </span>
+        <span style={{ width: '10%' }}>
+          Archive
+        </span>
+      </div>
+      {reverseSortedList.filter(isSearched(pattern)).map(item => {
         const onDismiss_with_event = (event) => onDismiss(event, item.objectID)
 
         return (

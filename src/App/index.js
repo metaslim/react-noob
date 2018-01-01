@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { sortBy } from 'lodash'
+import fetch from 'isomorphic-fetch'
 import './index.css';
 
 import Table from '../Table';
 import Search from '../Search';
-import {Button, ButtonWithLoading} from '../Button';
+import Button, {ButtonWithLoading} from '../Button';
 import Loading from '../Loading';
 
 import {DEFAULT_QUERY, DEFAULT_HPP, PATH_BASE, PATH_SEARCH, PARAM_SEARCH, PARAM_PAGE, PARAM_HPP} from '../Constant';
@@ -17,7 +19,9 @@ class App extends Component {
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
       error: null,
-      isLoading: false
+      isLoading: false,
+      sortKey: 'NONE',
+      isSortReverse: false,
     };
 
     this.needToSearchTopStories = this.needToSearchTopStories.bind(this)
@@ -28,7 +32,7 @@ class App extends Component {
     this.onSearchSubmit = this.handleSearchSubmit.bind(this)
     this.onSearchChange = this.handleSearchChange.bind(this)
     this.onDismiss = this.handleDismiss.bind(this)
-
+    this.onSort = this.handleSort.bind(this)
 
     //this.onDismiss = (id) => {
     //  const updateList = this.state.list.filter(item => item.objectID !== id);
@@ -68,6 +72,11 @@ class App extends Component {
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
       .catch(e => this.setState({ error: e }));
+  }
+
+  handleSort(sortKey) {
+    const isSortReverse = this.state.sortKey === sortKey && !this.state.isSortReverse;
+    this.setState({ sortKey, isSortReverse });
   }
 
   handleDismiss(event, id) {
@@ -120,7 +129,7 @@ class App extends Component {
   //}
 
   render() {
-    const {results, searchTerm, searchKey, error, isLoading} = this.state;
+    const {results, searchTerm, searchKey, error, isLoading, sortKey, isSortReverse} = this.state;
 
     const page = (results && results[searchKey] && results[searchKey].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
@@ -136,7 +145,7 @@ class App extends Component {
         <div className="interactions">
           <Search value={searchTerm} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>Search</Search>
         </div>
-        {<Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />}
+        {<Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} sortKey={sortKey} onSort={this.onSort} isSortReverse={isSortReverse}/>}
         <div className="interactions">
           <ButtonWithLoading isLoading={isLoading} onClick={fetchSearchTopStories}>More</ButtonWithLoading>
         </div>
